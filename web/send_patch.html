@@ -1,0 +1,250 @@
+<html>
+<head>
+  <style>
+  html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    color:#000;
+    font-size: 10;
+    font-family:'Helvetica', sans-serif;
+    overflow:hidden;
+  }
+  </style>
+</head>
+
+<body>
+<div id="post">Loading...</div>
+<script>
+
+///// utils /////
+
+// get url args:
+var querystring = (function() {
+	var qstr = window.location.search;
+	var query = {};
+	var a = qstr.substr(1).split('&');
+	for (var i = 0; i < a.length; i++) {
+		var b = a[i].split('=');
+		query[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || '');
+	}
+	return query;
+})();
+
+// debug messaging:
+function post(msg) {
+	console.log(msg);
+	document.getElementById("post").innerHTML = msg + "<br>";
+}
+
+///// websocket /////
+
+var wsocket; 
+var connected = false;
+var connectTask;
+
+function ws_connect() {
+	if (connected) return;
+    if ('WebSocket' in window) {
+        post('Connecting');
+        var host = querystring.host || "localhost";
+        var port = querystring.port || "8080";
+        var address = "ws://" + host + ":" + port + "/";
+        wsocket = new WebSocket(address);
+        wsocket.onopen = function(ev) {        
+            post('CONNECTED to ' + address);
+            connected = true;
+            // cancel the auto-reconnect task:
+            if (connectTask != undefined) clearInterval(connectTask);
+            // apparently this first reply is necessary
+            var message = 'hello from browser';
+            post('SENT: ' + message);
+            wsocket.send(message);
+			
+			// send some JSON:
+			wsocket.send(JSON.stringify({ 
+    "patcher" :     {
+        "fileversion" : 1,
+        "appversion" :      {
+            "major" : 7,
+            "minor" : 3,
+            "revision" : 1,
+            "architecture" : "x86",
+            "modernui" : 1
+        }
+,
+        "rect" : [ 59.0, 104.0, 640.0, 480.0 ],
+        "bglocked" : 0,
+        "openinpresentation" : 0,
+        "default_fontsize" : 12.0,
+        "default_fontface" : 0,
+        "default_fontname" : "Arial",
+        "gridonopen" : 1,
+        "gridsize" : [ 15.0, 15.0 ],
+        "gridsnaponopen" : 1,
+        "objectsnaponopen" : 1,
+        "statusbarvisible" : 2,
+        "toolbarvisible" : 1,
+        "lefttoolbarpinned" : 0,
+        "toptoolbarpinned" : 0,
+        "righttoolbarpinned" : 0,
+        "bottomtoolbarpinned" : 0,
+        "toolbars_unpinned_last_save" : 0,
+        "tallnewobj" : 0,
+        "boxanimatetime" : 200,
+        "enablehscroll" : 1,
+        "enablevscroll" : 1,
+        "devicewidth" : 0.0,
+        "description" : "",
+        "digest" : "",
+        "tags" : "",
+        "style" : "",
+        "subpatcher_template" : "",
+        "boxes" : [             {
+                "box" :                 {
+                    "id" : "obj-4",
+                    "maxclass" : "newobj",
+                    "numinlets" : 1,
+                    "numoutlets" : 0,
+                    "patching_rect" : [ 200.0, 265.0, 61.0, 22.0 ],
+                    "style" : "",
+                    "text" : "print num"
+                }
+
+            }
+,           {
+                "box" :                 {
+                    "id" : "obj-3",
+                    "maxclass" : "newobj",
+                    "numinlets" : 2,
+                    "numoutlets" : 1,
+                    "outlettype" : [ "int" ],
+                    "patching_rect" : [ 200.0, 207.0, 81.0, 22.0 ],
+                    "style" : "",
+                    "text" : "random 1000"
+                }
+
+            }
+,           {
+                "box" :                 {
+                    "id" : "obj-2",
+                    "maxclass" : "newobj",
+                    "numinlets" : 1,
+                    "numoutlets" : 0,
+                    "patching_rect" : [ 123.0, 207.0, 51.0, 22.0 ],
+                    "style" : "",
+                    "text" : "print on"
+                }
+
+            }
+,           {
+                "box" :                 {
+                    "id" : "obj-1",
+                    "maxclass" : "newobj",
+                    "numinlets" : 2,
+                    "numoutlets" : 1,
+                    "outlettype" : [ "bang" ],
+                    "patching_rect" : [ 123.0, 76.0, 128.0, 22.0 ],
+                    "style" : "",
+                    "text" : "metro 1000 @active 1"
+                }
+
+            }
+ ],
+        "lines" : [             {
+                "patchline" :               {
+                    "destination" : [ "obj-2", 0 ],
+                    "disabled" : 0,
+                    "hidden" : 0,
+                    "source" : [ "obj-1", 0 ]
+                }
+
+            }
+,           {
+                "patchline" :               {
+                    "destination" : [ "obj-3", 0 ],
+                    "disabled" : 0,
+                    "hidden" : 0,
+                    "source" : [ "obj-1", 0 ]
+                }
+
+            }
+,           {
+                "patchline" :               {
+                    "destination" : [ "obj-1", 1 ],
+                    "disabled" : 0,
+                    "hidden" : 0,
+                    "source" : [ "obj-3", 0 ]
+                }
+
+            }
+,           {
+                "patchline" :               {
+                    "destination" : [ "obj-4", 0 ],
+                    "disabled" : 0,
+                    "hidden" : 0,
+                    "source" : [ "obj-3", 0 ]
+                }
+
+            }
+ ],
+        "dependency_cache" : [  ],
+        "autosave" : 0
+    }
+
+}
+));
+			
+			// client messages sent with a "*" prefix will have the "*" stripped,
+			// but the server will broadcast them all back to all other clients
+			// broadcast a hello:
+			// send("*hello "+Math.floor(Math.random()*100));
+        };
+
+        wsocket.onclose = function(ev) {
+            post('DISCONNECTED from ' + address);
+            connected = false;
+            // set up an auto-reconnect task:
+            //connectTask = setInterval(ws_connect, 1000);
+        };
+
+        wsocket.onmessage = function(ev) {
+        	// was it a dict?
+        	if (ev.data.charAt(0) == "{") {
+        		// attempt to json parse it:
+        		var tree = JSON.parse(ev.data);
+        		post("parsed " + JSON.stringify(tree));
+        	} else {
+        		post("received msg:" + ev.data.length + ": " + ev.data.substr(0, 50));
+        	}
+        };
+
+        wsocket.onerror = function(ev) {
+            post("WebSocket error");
+        };
+
+    } else {
+        post("WebSockets are not available in this browser!!!");
+    }
+}
+
+function send(msg) {
+	if(wsocket != undefined) wsocket.send(msg);
+	post("sent msg:" + msg.length + ": " + msg);
+        	
+}
+
+///// sequencing /////
+
+function handlemessage(msg) {
+	
+}
+
+///// start up /////
+
+ws_connect();
+
+</script>
+</body>
+</html>
