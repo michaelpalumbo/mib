@@ -58,17 +58,25 @@ function ws_connect() {
             // cancel the auto-reconnect task:
             if (connectTask != undefined) clearInterval(connectTask);
             // apparently this first reply is necessary
-            var message = 'delete obj-3';
-            //post('SENT: ' + message);
+            var message = 'init';
+            post('SENT: ' + message);
             wsocket.send(message);
-			
-			// send some JSON:
-			//wsocket.send(JSON.stringify({ ,}));
+
+
+                // send some JSON:
+             wsocket.send(JSON.stringify({ 
+               // delete obj-8
+               "script" :    ["delete", "obj-8"]
+
+    
+
+}
+));
 			
 			// client messages sent with a "*" prefix will have the "*" stripped,
 			// but the server will broadcast them all back to all other clients
 			// broadcast a hello:
-			//send("*hello "+Math.floor(Math.random()*100));
+			// send("*hello "+Math.floor(Math.random()*100));
         };
 
         wsocket.onclose = function(ev) {

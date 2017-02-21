@@ -64,9 +64,9 @@ function ws_connect() {
 
 
                 // send some JSON:
-            wsocket.send(JSON.stringify({ 
-               // send new ojbect 
-               "script" :    ["newobject", "newobj", "@text", "metro 2000 @active 1", "@varname", "obj-8", "@patching_rect", 40., 30.]
+             wsocket.send(JSON.stringify({ 
+               // connect objects
+               "script" :    ["connect", "obj-7", 0, "obj-8", 0]
 
     
 
