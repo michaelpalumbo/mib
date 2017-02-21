@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>patcher editor</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+  <div class="fullpage">
+  <!--left panel used for the patcher view -->
+<div class="half patcher_container">
+	<!-- the canvas is used to draw patch cables -->
+	<canvas id="patcher_canvas" width="100%" height="100%"></canvas>
+	<!-- a status text at the bottom of the page -->
+	<div id="statusbar">Press 'n' for a new box.</div>
+	<!-- the div is used to contain the max boxes -->
+	<div id="patcher"></div>
+</div>
+
+   <!--right panel used for a code view -->
+<div class="half code_container" >
+	<p id="log">Ok.</p>
+<div></div>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+
+    <script src="js/index.js"></script>
+
+    
+
+</body>
+</html>

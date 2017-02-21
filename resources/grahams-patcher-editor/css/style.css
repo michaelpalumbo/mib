@@ -1,0 +1,114 @@
+/* reset css defaults */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+
+/* set font */
+html,
+input,
+textarea {
+  font-family: 'Helvetica', sans-serif;
+  font-size: 11px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* fill page */
+html {
+  height: 100vh;
+}
+
+/* fill page */
+.fullpage {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* fill half column */
+.half {
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+
+.patcher_container {
+  background: #ccc;
+  position: relative;
+}
+
+/* the canvas */
+#patcher_canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+}
+
+.patcher_container #statusbar {
+  position: absolute;
+  bottom: 0;
+  color: #ccc;
+  background: #999;
+  padding: 2px;
+  width: 100%;
+}
+
+.maxbox {
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 1px;
+  padding-right: 1px;
+  position: absolute;
+  min-width: 2.0em;
+  min-height: 1.5em;
+  background-color: #eee;
+  cursor:pointer;
+  display:inline-block;
+}
+
+.maxtext {}
+
+.inlet,
+.outlet {
+  width: 8px;
+  height: 3px;
+  background-color: #000;
+}
+
+.inlet:hover,
+.outlet:hover {
+  background-color: #F00;
+}
+
+.inlet {
+  position: absolute;
+  top: 0;
+}
+
+.outlet {
+  position: absolute;
+  bottom: 0;
+}
+
+#box_editor {
+  z-index: 1;
+  resize: none;
+}
+
+.code_container {
+  background: #eee;
+}
+
+#log {
+  white-space: pre;
+  height: 100%;
+  overflow: scroll;
+}
